@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: LGPL-3.0-only
+/// SPDX-License-Identifier: LGPL-3.0-only
 pragma solidity >=0.8.17;
 
 import "../common/Types.sol";
@@ -70,6 +70,26 @@ struct ProposalData {
     address proposer;
 }
 
+/// @dev Params defines the governance parameters
+struct Params {
+    int64 votingPeriod;
+    Coin[] minDeposit;
+    int64 maxDepositPeriod;
+    string quorum;
+    string threshold;
+    string vetoThreshold;
+    string minInitialDepositRatio;
+    string proposalCancelRatio;
+    string proposalCancelDest;
+    int64 expeditedVotingPeriod;
+    string expeditedThreshold;
+    Coin[] expeditedMinDeposit;
+    bool burnVoteQuorum;
+    bool burnProposalDepositPrevote;
+    bool burnVoteVeto;
+    string minDepositRatio;
+}
+
 /// @author The Evmos Core Team
 /// @title Gov Precompile Contract
 /// @dev The interface through which solidity contracts will interact with Gov
@@ -114,7 +134,7 @@ interface IGov {
         WeightedVoteOption[] calldata options,
         string memory metadata
     ) external returns (bool success);
-     
+
     /// QUERIES
 
     /// @dev getVote returns the vote of a single voter for a
@@ -189,4 +209,11 @@ interface IGov {
         address depositor,
         PageRequest calldata pagination
     ) external view returns (ProposalData[] memory proposals, PageResponse memory pageResponse);
+
+    /// @dev getParams returns the current governance parameters.
+    /// @param paramsType The type of parameters to query (deposit, voting, tallying)
+    /// @return params The governance parameters
+    function getParams(
+        string calldata paramsType
+    ) external view returns (Params memory params);
 }
